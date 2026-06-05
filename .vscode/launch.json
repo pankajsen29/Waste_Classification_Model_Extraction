@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // "name": "Debug src.main",
+            "name": "Debug query API",
+            // "name": "Run FastAPI App",
+
+            "type": "debugpy",
+            "request": "launch",
+
+            // "module": "src.main",
+
+            "module": "src.extraction.query_api",
+            
+            // "module": "uvicorn",
+            // "args": [
+            //     "src.api.app:app",
+            //     "--reload"
+            // ],
+
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
