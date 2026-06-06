@@ -7,7 +7,7 @@
 #
 # - example json received:
 # {
-#   "image": "iamge_01.jpg",
+#   "image": "train/plastic/image_01.jpg",
 #   "predicted_class": "Plastic",
 #   "scores": 
 #   {
@@ -16,6 +16,20 @@
 #     "Glass": 0.03,
 #     "Metal": 0.02
 #   }
+# }
+# 
+# - example json stored:
+# {
+#   "image": "train/plastic/image_01.jpg",
+#   "predicted_class": "Plastic",
+#   "scores": 
+#   {
+#     "Plastic": 0.91,
+#     "Paper": 0.04,
+#     "Glass": 0.03,
+#     "Metal": 0.02
+#   }
+#   "true_class": "plastic"
 # }
 #####################################################
 
@@ -27,19 +41,21 @@ from pathlib import Path
 # Configuration
 API_URL = "http://127.0.0.1:8000/predict"
 DATA_DIR = "data/TrashBox"
-OUTPUT_FILE = "query_results.jsonl"
+OUTPUT_FILE = "data/Query_Results/query_results.jsonl"
 
 # Query API and store results
-with open(OUTPUT_FILE, "w", encoding="utf-8") as outfile:
+with open(Path(OUTPUT_FILE), "w", encoding="utf-8") as outfile:
 
     image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
     for image_path in Path(DATA_DIR).rglob("*"):
 
-        if image_path.suffix.lower() not in image_extensions:
+        if not image_path.is_file() or image_path.suffix.lower() not in image_extensions:
             continue
-
-        print(f"Processing: {image_path.name}")
+        
+        relative_path = image_path.relative_to(DATA_DIR)
+        print(f"Processing: {relative_path}")
+        true_class = relative_path.parts[1]
 
         mime_types = {
                 ".jpg": "image/jpeg",
@@ -47,6 +63,7 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as outfile:
                 ".png": "image/png"
                 }
         
+        # "image_path" should be used for filesystem access, not the "relative_path"
         content_type = mime_types.get(image_path.suffix.lower(), "application/octet-stream")
 
         try:
@@ -54,7 +71,7 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as outfile:
 
                 files = {
                     "file": (
-                        image_path.name,
+                        str(relative_path.as_posix()),
                         img_file,
                         content_type
                     )
@@ -67,12 +84,11 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as outfile:
                 )
 
             response.raise_for_status()
-
             prediction_result = response.json()
-
+            prediction_result["true_class"] = true_class
             outfile.write(json.dumps(prediction_result) + "\n")
 
         except Exception as e:
-            print(f"Failed: {image_path.name} -> {e}")
+            print(f"Failed: {relative_path} -> {e}")
 
 print(f"\nFinished. Results stored in {OUTPUT_FILE}")
