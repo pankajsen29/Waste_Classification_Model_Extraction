@@ -41,6 +41,31 @@ train_loader, val_loader, class_names, num_classes, idx_to_class = get_dataloade
 #TESTCODE
 images, targets = next(iter(train_loader))
 print(images.shape, targets.shape)
-#o/p: torch.Size([832, 3, 224, 224]) torch.Size([16, 7])
+#o/p: torch.Size([32, 3, 224, 224]) torch.Size([32, 7])
 #images=a single batch pulled from train_loader
-#targets=targets for that batch
+#targets=target vector, e.g., tensor([0.05, 0.04, 0.91])
+
+
+######## Step 4: model initialization #########
+from src.model import (
+    get_model,
+    get_loss_function,
+    get_optimizer,
+    get_device
+)
+
+device = get_device()
+model = get_model("mobilenet_v2", num_classes) #lightweight model for training an extracted model
+#model = get_model("resnet18", num_classes) #primary - main CNN result
+#model = get_model("resnet34", num_classes) #baseline
+#model = get_model("efficientnet_b0", num_classes) #best final model
+model = model.to(device)
+
+# KLDivLoss is needed as loss function because we have soft label probability vectors.
+criterion = get_loss_function()
+
+#optimizer = get_optimizer(model, optimizer_name="adam", lr=0.001)
+optimizer = get_optimizer(model, optimizer_name="sgd", lr=0.001)
+#optimizer = get_optimizer(model, optimizer_name="sgd", lr=0.01) #only with efficientnet_b0
+
+
