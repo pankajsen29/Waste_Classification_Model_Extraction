@@ -10,11 +10,16 @@
 #   "image": "train/plastic/image_01.jpg",
 #   "predicted_class": "Plastic",
 #   "scores": 
-#   {
-#     "Plastic": 0.91,
-#     "Paper": 0.04,
-#     "Glass": 0.03,
-#     "Metal": 0.02
+#    {
+#      "Cardboard": 0.9753, 
+#      "Food Organics": 0.0003, 
+#      "Glass": 0.0003, 
+#      "Metal": 0.0015, 
+#      "Miscellaneous Trash": 0.0021, 
+#      "Paper": 0.0153, 
+#      "Plastic": 0.0004, 
+#      "Textile Trash": 0.003, 
+#      "Vegetation": 0.0018
 #   }
 # }
 # 
@@ -23,11 +28,16 @@
 #   "image": "train/plastic/image_01.jpg",
 #   "predicted_class": "Plastic",
 #   "scores": 
-#   {
-#     "Plastic": 0.91,
-#     "Paper": 0.04,
-#     "Glass": 0.03,
-#     "Metal": 0.02
+#    {
+#      "Cardboard": 0.9753, 
+#      "Food Organics": 0.0003, 
+#      "Glass": 0.0003, 
+#      "Metal": 0.0015, 
+#      "Miscellaneous Trash": 0.0021, 
+#      "Paper": 0.0153, 
+#      "Plastic": 0.0004, 
+#      "Textile Trash": 0.003, 
+#      "Vegetation": 0.0018
 #   }
 #   "true_class": "plastic"
 # }
@@ -90,10 +100,11 @@ def get_query_results():
                 prediction_result = response.json()
                 prediction_result["true_class"] = true_class
                 outfile.write(json.dumps(prediction_result) + "\n")
+                query_status = True
 
             except Exception as e:
                 query_status = False
-                #print(f"Failed: {relative_path} -> {e}")
+                print(f"Failed: {relative_path} -> {e}")
     
     return OUTPUT_FILE, query_status
     
