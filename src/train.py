@@ -1,5 +1,6 @@
 ####################################################################
-#Step 3: Writing the training loop (epochs + batches + validation)
+# Step 5 (during model extraction training):
+# - Writing the training loop (epochs + batches + validation)
 ####################################################################
 
 import torch
@@ -109,12 +110,7 @@ def train_model(
             val_loader,
             criterion,
             device
-        )
-
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss   
-            print(f"best_val_loss: {best_val_loss}")         
-            save_trained_model(model, optimizer, save_model_file) #save trained model weights for best val loss
+        )          
 
         history["train_loss"].append(train_loss)
         history["train_acc"].append(train_acc)
@@ -123,6 +119,14 @@ def train_model(
 
         print(f"Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.4f} "
             f"|| Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f}")
+        
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss                  
+            save_trained_model(model, optimizer, save_model_file) #save trained model weights for best val loss
+            print(f"best_validation_loss: {best_val_loss}")   
+            print(f"Model is saved as current_validation_loss < best_validation_loss")  
+        else:
+            print(f"Model is not saved as current_validation_loss > best_validation_loss") 
 
     return model, history
 

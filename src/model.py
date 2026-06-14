@@ -1,7 +1,9 @@
-############################################################
-# Step 4 (during model extraction training): Model initialization 
-# (ResNet18 + transfer learning)
-############################################################
+#################################################################################
+# Step 4 (during model extraction training):
+# - Model initialization: (ResNet18/mobilenet_v2/efficientnet_b0) + transfer learning
+# - loss function: KLDivLoss is used because we have soft label probability vectors.
+# - optimizer: sgd is chosen for the training of model with soft label prob vectors
+##################################################################################
 
 import torch
 import torch.nn as nn

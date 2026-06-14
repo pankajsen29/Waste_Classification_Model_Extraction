@@ -1,6 +1,6 @@
 
 DEBUG = False
-PREDICT_QUERY = False
+PREDICT_QUERY = False # For: 1) obtaining the predictions in query_results.jsonl, 2) getting the results splitted into train.jsonl and val.jsonl
 
 if DEBUG:
     NUM_EPOCHS = 10
@@ -69,8 +69,8 @@ model = model.to(device)
 # KLDivLoss is needed as loss function because we have soft label probability vectors.
 criterion = get_loss_function()
 
-#optimizer = get_optimizer(model, optimizer_name="adam", lr=0.001)
-optimizer = get_optimizer(model, optimizer_name="sgd", lr=0.001)
+optimizer = get_optimizer(model, optimizer_name="adam", lr=0.001)
+#optimizer = get_optimizer(model, optimizer_name="sgd", lr=0.001)
 #optimizer = get_optimizer(model, optimizer_name="sgd", lr=0.01) #only with efficientnet_b0
 
 
@@ -132,3 +132,29 @@ else:
     with open(train_history_json, "r") as f:
         history = json.load(f)
 
+'''
+######### plots ##############
+from src.plots import plot_learning_curves
+
+plot_learning_curves(history)
+
+#how to interpret learning curves
+#Train (Down), Val (Down) : Good fit
+#Train (Down), Val (Up) :  Overfitting
+#Both high & flat : Underfitting
+'''
+
+'''
+############## tuning (OPTIONAL) ###################
+OPTIONAL at beginning: same settings is used as the target model
+    # Transforms
+    # Batch Size
+    # Optimizer
+    # Learning Rate
+    # Epochs
+
+FUTURE experiments:
+    # different architecture (EfficientNet-B0 vs ResNet18)
+    # frozen vs fine-tuned backbone: feature_extract = True
+    # Learning Rate: 0.001, 0.0005, 0.0001
+'''
