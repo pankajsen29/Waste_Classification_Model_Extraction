@@ -78,7 +78,7 @@ optimizer = get_optimizer(model, optimizer_name="adam", lr=0.001)
 from src.train import (
     train_model, 
     save_trained_model,
-    load_trained_model,
+    load_model_checkpoint,
     dummy_training1, 
     dummy_training2,
     test_one_training_step
@@ -102,9 +102,14 @@ save_dir.mkdir(parents=True, exist_ok=True)
 save_model_file = save_dir / "extracted_waste_seg_full_training_state.pth"
 train_history_json = save_dir / "extracted_waste_seg_training_history.json"
 
-if DEBUG:
-    #existing model needs to passed, to load the saved weights from disc
-    model, optimizer = load_trained_model(model, save_model_file)
+if DEBUG:    
+    # 1. load checkpoint first
+    checkpoint = load_model_checkpoint(save_model_file, device)
+
+    # 2. load trained weights
+    model.load_state_dict(checkpoint["model"])
+    class_names = checkpoint["class_names"]
+    optimizer = checkpoint["optimizer"]
     
     #loading the history from json
     with open(train_history_json, "r") as f:
@@ -116,6 +121,7 @@ else:
         val_loader,
         criterion,
         optimizer,
+        class_names,
         device,
         save_model_file,
         num_epochs=NUM_EPOCHS
