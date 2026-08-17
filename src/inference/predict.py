@@ -28,15 +28,13 @@ import torch
 from PIL import Image
 
 from src.model import get_device
-from src.inference.preprocess import inference_transforms, get_class_info
+from src.inference.preprocess import inference_transforms
 from src.inference.load_model import load_model
 
 # Load ONCE globally
-model = load_model()
+model, class_names = load_model()
 
 device = get_device()
-
-class_names, num_classes = get_class_info()
 
 def predict_image(image: Image.Image):
     # Preprocess image

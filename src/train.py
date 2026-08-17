@@ -81,6 +81,7 @@ def train_model(
     val_loader,
     criterion,
     optimizer,
+    class_names,
     device,
     save_model_file,
     num_epochs=20
@@ -122,7 +123,7 @@ def train_model(
         
         if val_loss < best_val_loss:
             best_val_loss = val_loss                  
-            save_trained_model(model, optimizer, save_model_file) #save trained model weights for best val loss
+            save_trained_model(model, optimizer, class_names, save_model_file) #save trained model weights for best val loss
             print(f"best_validation_loss: {best_val_loss}")   
             print(f"Model is saved as current_validation_loss < best_validation_loss")  
         else:
@@ -131,18 +132,16 @@ def train_model(
     return model, history
 
 
-def save_trained_model(model, optimizer, filepath):
+def save_trained_model(model, optimizer, class_names, filepath):
     torch.save({
     "model": model.state_dict(),
-    "optimizer": optimizer.state_dict()
+    "optimizer": optimizer.state_dict(),
+    "class_names": class_names
 }, filepath)
 
-def load_trained_model(model, filepath):
-    checkpoint = torch.load(filepath)
-    model_state_dict = checkpoint["model"]
-    model.load_state_dict(model_state_dict)
-    optimizer = checkpoint["optimizer"]
-    return model, optimizer
+def load_model_checkpoint(filepath, device):
+    model_checkpoint = torch.load(filepath, map_location=device)
+    return model_checkpoint
 
 #TESTCODE
 #dummy training function, it confirms:
