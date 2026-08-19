@@ -58,7 +58,12 @@ class JSONLDataset(Dataset):
         if not os.path.exists(img_path):
             raise FileNotFoundError(img_path)
 
-        image = Image.open(img_path).convert("RGB")
+        image = Image.open(img_path)
+
+        if image.mode == "P":
+            image = image.convert("RGBA") # converting PNGs through RGBA first which use a palette (P) plus transparency.
+
+        image = image.convert("RGB")
         if self.transform:
             image = self.transform(image)
 
