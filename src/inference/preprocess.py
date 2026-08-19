@@ -4,15 +4,11 @@
 #####################################################
 
 from torchvision import transforms
-
-#ImageNet normalization (mandatory for pretrained models)
-IMAGENET_MEAN = [0.485, 0.456, 0.406]
-IMAGENET_STD  = [0.229, 0.224, 0.225]
-
+import src.config as cfg
 
 #same as the Validation / Test transforms (NO augmentation, only resize + normalize)
 inference_transforms = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
+    transforms.Normalize(cfg.IMAGENET_MEAN, cfg.IMAGENET_STD)
 ])

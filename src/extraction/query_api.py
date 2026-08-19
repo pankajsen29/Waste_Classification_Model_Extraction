@@ -46,27 +46,23 @@
 import json
 import requests
 from pathlib import Path
-
-# Configuration
-API_URL = "http://127.0.0.1:8000/predict"
-DATA_DIR = "data/TrashBox"
-OUTPUT_FILE = "data/Query_Results/query_results.jsonl"
+import src.config as cfg
 
 def get_query_results():
     """
     Query API and store results
     """
     query_status = True
-    with open(Path(OUTPUT_FILE), "w", encoding="utf-8") as outfile:
+    with open(cfg.TARGET_QUERY_RESULTS_FILE, "w", encoding="utf-8") as outfile:
 
         image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
-        for image_path in Path(DATA_DIR).rglob("*"):
+        for image_path in Path(cfg.DATA_DIR).rglob("*"):
 
             if not image_path.is_file() or image_path.suffix.lower() not in image_extensions:
                 continue
             
-            relative_path = image_path.relative_to(DATA_DIR)
+            relative_path = image_path.relative_to(cfg.DATA_DIR)
             #print(f"Processing: {relative_path}")
             true_class = relative_path.parts[1]
 
@@ -91,7 +87,7 @@ def get_query_results():
                     }
 
                     response = requests.post(
-                        API_URL,
+                        cfg.TARGET_API_URL,
                         files=files,
                         timeout=30
                     )
@@ -106,5 +102,5 @@ def get_query_results():
                 query_status = False
                 print(f"Failed: {relative_path} -> {e}")
     
-    return OUTPUT_FILE, query_status
+    return cfg.TARGET_QUERY_RESULTS_FILE, query_status
     

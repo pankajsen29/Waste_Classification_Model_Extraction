@@ -8,16 +8,7 @@ from PIL import Image
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
-
-
-# Configuration
-DATA_DIR = "data/TrashBox"
-TRAIN_FILE = "data/Query_Results/train.jsonl"
-VAL_FILE = "data/Query_Results/val.jsonl"
-
-#ImageNet normalization (mandatory for pretrained models)
-IMAGENET_MEAN = [0.485, 0.456, 0.406]
-IMAGENET_STD  = [0.229, 0.224, 0.225]
+import src.config as cfg
 
 
 #training transforms (with augmentation)
@@ -31,14 +22,14 @@ train_transforms = transforms.Compose([
         saturation=0.2
     ),
     transforms.ToTensor(),
-    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
+    transforms.Normalize(cfg.IMAGENET_MEAN, cfg.IMAGENET_STD)
 ])
 
 #Validation transforms (NO augmentation, only resize + normalize)
 val_transforms = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
+    transforms.Normalize(cfg.IMAGENET_MEAN, cfg.IMAGENET_STD)
 ])
 
 class JSONLDataset(Dataset):
@@ -115,13 +106,13 @@ def get_dataloaders(batch_size=16, num_workers=2):
         Returns dataloaders + class info.
         """
 
-        class_to_idx = build_class_index([TRAIN_FILE, VAL_FILE])
+        class_to_idx = build_class_index([cfg.TRAIN_DATASET_FILE, cfg.VAL_DATASET_FILE])
         class_names  = list(class_to_idx.keys())
         num_classes  = len(class_names)
         idx_to_class = { idx: name for name, idx in class_to_idx.items()}
 
-        train_dataset = JSONLDataset(TRAIN_FILE, DATA_DIR, class_to_idx, transform=train_transforms)
-        val_dataset   = JSONLDataset(VAL_FILE,   DATA_DIR, class_to_idx, transform=val_transforms)
+        train_dataset = JSONLDataset(cfg.TRAIN_DATASET_FILE, cfg.DATA_DIR, class_to_idx, transform=train_transforms)
+        val_dataset   = JSONLDataset(cfg.VAL_DATASET_FILE, cfg.DATA_DIR, class_to_idx, transform=val_transforms)
 
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,  num_workers=num_workers)
         val_loader   = DataLoader(val_dataset,   batch_size=batch_size, shuffle=False, num_workers=num_workers)
