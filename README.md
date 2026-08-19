@@ -185,6 +185,53 @@ Let's decode few of the jargons first:
 * Validation loop (for each epoch, each batch): 
   - includes only forward pass
 
+**Training settings and output for all the epochs:**
+
+**Model: mobilenet_v2, Loss function: kldivLoss, Optimizer: adam, learning rate: 0.001, Epoch: 10, Batch:32**
+
+        Epoch [1/10]
+        Train Loss: 0.5887 | Train Acc: 0.5777 || Val Loss: 0.4225 | Val Acc: 0.6374
+        best_validation_loss: 0.422467137589065
+        Model is saved as current_validation_loss < best_validation_loss
+        
+        Epoch [2/10]
+        Train Loss: 0.5359 | Train Acc: 0.5993 || Val Loss: 0.4231 | Val Acc: 0.6436
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [3/10]
+        Train Loss: 0.5178 | Train Acc: 0.6049 || Val Loss: 0.4289 | Val Acc: 0.6315
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [4/10]
+        Train Loss: 0.5138 | Train Acc: 0.6078 || Val Loss: 0.4187 | Val Acc: 0.6366
+        best_validation_loss: 0.4186742536288755
+        Model is saved as current_validation_loss < best_validation_loss
+        
+        Epoch [5/10]
+        Train Loss: 0.5178 | Train Acc: 0.6044 || Val Loss: 0.4218 | Val Acc: 0.6490
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [6/10]
+        Train Loss: 0.5145 | Train Acc: 0.6089 || Val Loss: 0.4432 | Val Acc: 0.6397
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [7/10]
+        Train Loss: 0.5158 | Train Acc: 0.6104 || Val Loss: 0.4480 | Val Acc: 0.6393
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [8/10]
+        Train Loss: 0.5109 | Train Acc: 0.6126 || Val Loss: 0.4167 | Val Acc: 0.6498
+        best_validation_loss: 0.4167148387849563
+        Model is saved as current_validation_loss < best_validation_loss
+        
+        Epoch [9/10]
+        Train Loss: 0.5073 | Train Acc: 0.6141 || Val Loss: 0.4277 | Val Acc: 0.6475
+        Model is not saved as current_validation_loss > best_validation_loss
+        
+        Epoch [10/10]
+        Train Loss: 0.5155 | Train Acc: 0.6020 || Val Loss: 0.4229 | Val Acc: 0.6424
+        Model is not saved as current_validation_loss > best_validation_loss
+
 ## 6. SAVING OF THE TRAINED MODEL STATE
 
 * Tracked:
@@ -207,6 +254,8 @@ Let's decode few of the jargons first:
   - But KL divergence says: Model B reproduces the target probabilities much better.
   - Since my goal is to mimic target model behavior, the lower KL loss is the better surrogate.
 
+
+**Note: Trained models can be found inside project's "checkpoints" directory**
 
 ## 7. PREDICTION QUERY RESULTS
 
@@ -252,3 +301,38 @@ Let's decode few of the jargons first:
           Image 		Plastic 		Paper 		Glass
           ImageA		0.99		    0.01		  0.00
           ImageB		0.52		    0.45		  0.03
+
+**Note: Sample prediction query result JSON can be found inside project's "data/Query_Results" directory**
+
+
+## 8. DEFENSES
+
+Surrogate accuracy differs based on what the prediction query exposes (this is due for future experiments).
+
+Hence few defense strategies for the production API would be:
+* truncate probabilities (or the confidence scores), 
+* return only top-k labels, 
+* or return only the predicted class.
+
+
+## 9. REFERENCES
+
+RealWaste Dataset: 
+
+https://github.com/sam-single/realwaste
+
+https://www.mdpi.com/2078-2489/14/12/633
+
+TrashBox Dataset: https://www.kaggle.com/datasets/saimonv/trashbox
+
+ResNet: https://arxiv.org/abs/1512.03385
+
+Mobilenet_V2: https://arxiv.org/abs/1801.04381
+
+Pre-trained weights:
+
+ResNet: https://download.pytorch.org/models/resnet18-f37072fd.pth
+
+Mobilenet_V2: https://download.pytorch.org/models/mobilenet_v2-b0353104.pth
+
+PyTorch: https://docs.pytorch.org/vision/0.12/models.html
