@@ -55,25 +55,17 @@ def get_query_results():
     query_status = True
     with open(cfg.TARGET_QUERY_RESULTS_FILE, "w", encoding="utf-8") as outfile:
 
-        image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-
         for image_path in Path(cfg.DATA_DIR).rglob("*"):
 
-            if not image_path.is_file() or image_path.suffix.lower() not in image_extensions:
+            if not image_path.is_file() or image_path.suffix.lower() not in cfg.image_extensions:
                 continue
             
             relative_path = image_path.relative_to(cfg.DATA_DIR)
             #print(f"Processing: {relative_path}")
             true_class = relative_path.parts[1]
-
-            mime_types = {
-                    ".jpg": "image/jpeg",
-                    ".jpeg": "image/jpeg",
-                    ".png": "image/png"
-                    }
             
             # "image_path" should be used for filesystem access, not the "relative_path"
-            content_type = mime_types.get(image_path.suffix.lower(), "application/octet-stream")
+            content_type = cfg.mime_types.get(image_path.suffix.lower(), "application/octet-stream")
 
             try:
                 with open(image_path, "rb") as img_file:

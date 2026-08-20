@@ -12,6 +12,13 @@ TARGET_QUERY_RESULTS_DIR = PROJECT_ROOT / "data" / "Query_Results"
 TARGET_QUERY_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 TARGET_QUERY_RESULTS_FILE = TARGET_QUERY_RESULTS_DIR / "query_results.jsonl"
 
+image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+mime_types = {
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".png": "image/png"
+                    }
+
 # settings for dataset split
 TRAIN_DATASET_FILE = TARGET_QUERY_RESULTS_DIR / "train.jsonl"
 VAL_DATASET_FILE = TARGET_QUERY_RESULTS_DIR / "val.jsonl"
